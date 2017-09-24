@@ -11,13 +11,13 @@ public:
 
   explicit ConnectionHandler(std::string port);
 
+  void send(std::vector<char> content);
+
+  std::vector<char> receive(size_t sizeInBytes);
+
   ConnectionHandler(const ConnectionHandler &) = delete;
 
   ConnectionHandler &operator=(const ConnectionHandler &) = delete;
-
-  void send(std::vector<char> content);
-
-  std::vector<char> recieve(unsigned long sizeInBytes);
 
   ~ConnectionHandler();
 

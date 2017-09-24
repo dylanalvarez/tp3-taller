@@ -1,4 +1,6 @@
 #include "common_ConnectionHandler.h"
+#include <vector>
+#include <string>
 
 #define SUCCESS 0
 
