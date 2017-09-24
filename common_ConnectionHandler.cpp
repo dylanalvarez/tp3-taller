@@ -7,8 +7,8 @@
 #include <cerrno>
 #include <utility>
 
-#include "connection_handler.h"
-#include "Exception.h"
+#include "common_ConnectionHandler.h"
+#include "common_Exception.h"
 
 ConnectionHandler::ConnectionHandler(std::string ip, std::string port) {
   bool isServer = (ip.empty());
@@ -86,7 +86,7 @@ ConnectionHandler::~ConnectionHandler() {
 }
 
 void ConnectionHandler::send(std::vector<char> content) {
-  int sentBytes = 0;
+  unsigned long sentBytes = 0;
   auto sizeInBytes = content.size();
   while (sentBytes < sizeInBytes) {
     auto sent = (int) ::send(this->peer_skt, &content[sentBytes],
@@ -100,7 +100,7 @@ void ConnectionHandler::send(std::vector<char> content) {
 }
 
 std::vector<char> ConnectionHandler::recieve(unsigned long sizeInBytes) {
-  int receivedBytes = 0;
+  unsigned long receivedBytes = 0;
   std::vector<char> buffer(sizeInBytes);
   while (receivedBytes < sizeInBytes) {
     auto received = (int) recv(this->peer_skt,

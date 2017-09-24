@@ -3,16 +3,16 @@
 
 
 #include <exception>
+#include <string>
 
 class Exception : public std::exception {
 public:
-  Exception(std::string what);
+  explicit Exception(std::string what);
 
-  const char *what() const override;
+  const char *what() const noexcept override;
 
-  Exception(const Exception &) = delete;
-
-  Exception &operator=(const Exception &) = delete;
+private:
+  std::string message;
 };
 
 
