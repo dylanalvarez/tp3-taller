@@ -1,5 +1,5 @@
-#ifndef TP2_TALLER_EXCEPTION_H
-#define TP2_TALLER_EXCEPTION_H
+#ifndef TP3_TALLER_EXCEPTION_H
+#define TP3_TALLER_EXCEPTION_H
 
 
 #include <exception>
@@ -16,4 +16,4 @@ private:
 };
 
 
-#endif //TP2_TALLER_EXCEPTION_H
+#endif //TP3_TALLER_EXCEPTION_H

@@ -6,15 +6,16 @@
 #include <unistd.h>
 #include <cerrno>
 #include <utility>
+#include <iostream>
 
 #include "common_ConnectionHandler.h"
 #include "common_Exception.h"
 
-ConnectionHandler::ConnectionHandler(std::string ip, std::string port) {
-  bool isServer = (ip.empty());
+ConnectionHandler::ConnectionHandler(std::string ip, std::string port) :
+  ip(std::move(ip)), port(std::move(port)) {
+  bool isServer = (this->ip.empty());
 
   struct addrinfo hints{};
-  memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
   if (isServer) {
@@ -27,7 +28,11 @@ ConnectionHandler::ConnectionHandler(std::string ip, std::string port) {
   this->peer_skt = -1;
 
   struct addrinfo *result;
-  int exitCode = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
+  int exitCode = getaddrinfo(
+    isServer ? nullptr : this->ip.c_str(),
+    this->port.c_str(),
+    &hints,
+    &result);
   if (exitCode != 0) { throw Exception(gai_strerror(exitCode)); }
 
   bool success = false;
@@ -49,8 +54,12 @@ ConnectionHandler::ConnectionHandler(std::string ip, std::string port) {
   if (isServer) {
     this->skt = skt;
     success = false;
-    if (bind(skt, result->ai_addr, result->ai_addrlen) != -1
-        && listen(skt, 1) != -1) {
+    int a = bind(skt, result->ai_addr, result->ai_addrlen);
+    std::cout << strerror(errno);
+    int b = listen(skt, 1);
+    std::cout << strerror(errno);
+
+    if (a != -1 && b != -1) {
       int client_skt = accept(skt, nullptr, nullptr);
       if (client_skt != -1) {
         success = true;

@@ -24,6 +24,8 @@ public:
 private:
   int skt;
   int peer_skt;
+  std::string ip;
+  std::string port;
 };
 
 #endif //TP3_TALLER_CONNECTION_HANDLER_H
