@@ -1,14 +1,13 @@
 #include "common_ConnectionHandler.h"
+#include "common_Exception.h"
+#include "client_FileParser.h"
 #include <vector>
 #include <string>
-
-#define SUCCESS 0
+#include <iostream>
 
 int main(int argc, char *argv[]) {
-  ConnectionHandler connectionHandler("127.0.0.1", "1024");
-  std::string message = "message";
-  connectionHandler.send(std::vector<char>(message.begin(), message.end()));
-  connectionHandler.send(std::vector<char>(message.begin(), message.end()));
-  connectionHandler.send(std::vector<char>(message.begin(), message.end()));
-  return SUCCESS;
+  if (argc < 2) { throw Exception("Missing file name"); }
+  FileParser fileParser(argv[1]);
+  std::cout << fileParser.parseNextInstruction();
+  return 0;
 }

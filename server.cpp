@@ -4,12 +4,10 @@
 
 #include "common_ConnectionHandler.h"
 
-#define SUCCESS 0
-
 int main(int argc, char *argv[]) {
   ConnectionHandler connectionHandler("1024");
   std::vector<char> content = connectionHandler.receive(3 * 7);
   std::string message(content.begin(), content.end());
   std::cout << message << std::endl;
-  return SUCCESS;
+  return 0;
 }

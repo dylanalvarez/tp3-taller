@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <string>
 
 #include "common_ConnectionHandler.h"
 #include "common_Exception.h"
