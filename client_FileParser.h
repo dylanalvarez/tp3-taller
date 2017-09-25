@@ -12,6 +12,20 @@ public:
   std::string parseNextInstruction();
 
 private:
+  enum Operation {
+    addAmount = 0,
+    forceAddAmount = 1,
+    checkAmount = 2,
+    registerCard = 3,
+    setAmount = 4
+  };
+
+  std::string _toString(Operation operation, uint32_t id, int32_t amount);
+
+  std::string _toFixedLengthString(int32_t, size_t size);
+
+  std::string _toFixedLengthString(uint32_t, size_t size);
+
   std::ifstream source;
 };
 
