@@ -21,7 +21,7 @@ std::string FileParser::parseNextInstruction() {
   // extract opcode from metadata
   unsigned char opCode = (metadataBuffer[1] >> 3) & (unsigned char) 7;
   if (opCode > 4) { throw Exception("Wrong opcode"); }
-  auto operation = static_cast<FileParser::Operation>(opCode);
+  auto operation = static_cast<Operation>(opCode);
 
   // read id
   std::bitset<DATA_LENGTH * 8> idBuffer;
@@ -55,21 +55,24 @@ std::string FileParser::parseNextInstruction() {
 }
 
 std::string
-FileParser::_toString(FileParser::Operation operation,
-                      uint32_t id, int32_t amount) {
+FileParser::_toString(Operation operation, uint32_t id, int32_t amount) {
   std::string result;
 
   switch (operation) {
     case addAmount:
       result += "A";
+      break;
     case forceAddAmount:
       result += "F";
+      break;
     case checkAmount:
       result += "P";
-    case setAmount:
-      result += "S";
+      break;
     case registerCard:
       result += "R";
+      break;
+    case setAmount:
+      result += "S";
   }
   result += _toFixedLengthString(id, 10);
   if (operation != checkAmount && operation != registerCard) {
