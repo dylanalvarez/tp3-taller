@@ -3,8 +3,10 @@
 #include <cstring>
 #include <string>
 #include <netinet/in.h>
+#include <map>
 #include "client_FileParser.h"
 #include "common_Exception.h"
+#include "common_Utils.h"
 
 #define METADATA_LENGTH 2
 #define DATA_LENGTH 4
@@ -21,7 +23,7 @@ std::string FileParser::parseNextInstruction() {
   // extract opcode from metadata
   unsigned char opCode = (metadataBuffer[1] >> 3) & (unsigned char) 7;
   if (opCode > 4) { throw Exception("Wrong opcode"); }
-  auto operation = static_cast<FileParser::Operation>(opCode);
+  auto operation = static_cast<Operation>(opCode);
 
   // read id
   std::bitset<DATA_LENGTH * 8> idBuffer;
@@ -55,39 +57,19 @@ std::string FileParser::parseNextInstruction() {
 }
 
 std::string
-FileParser::_toString(FileParser::Operation operation,
-                      uint32_t id, int32_t amount) {
+FileParser::_toString(Operation operation, uint32_t id, int32_t amount) {
   std::string result;
+  std::map<Operation, char> opCodes = {
+    {addAmount,      'A'},
+    {forceAddAmount, 'F'},
+    {checkAmount,    'P'},
+    {registerCard,   'R'},
+    {setAmount,      'S'},
+  };
 
-  switch (operation) {
-    case addAmount:
-      result += "A";
-    case forceAddAmount:
-      result += "F";
-    case checkAmount:
-      result += "P";
-    case setAmount:
-      result += "S";
-    case registerCard:
-      result += "R";
-  }
-  result += _toFixedLengthString(id, 10);
+  result += opCodes[operation] + Utils::toFixedLengthString(id, 10);
   if (operation != checkAmount && operation != registerCard) {
-    result += _toFixedLengthString(amount, 10);
+    result += Utils::toFixedLengthString(amount, 10);
   }
   return result;
-}
-
-std::string FileParser::_toFixedLengthString(int32_t number, size_t size) {
-  if (number < 0) {
-    return "-" + _toFixedLengthString((uint32_t) (-number), size - 1);
-  } else {
-    return _toFixedLengthString((uint32_t) number, size);
-  }
-}
-
-std::string FileParser::_toFixedLengthString(uint32_t number, size_t size) {
-  std::string numberAsString = std::to_string(number);
-  std::string padding = std::string(size - numberAsString.length(), '0');
-  return padding + numberAsString;
 }
