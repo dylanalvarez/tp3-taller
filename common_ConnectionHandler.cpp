@@ -50,9 +50,7 @@ ConnectionHandler::ConnectionHandler(std::string ip, std::string port) :
     this->skt = skt;
     success = false;
     int bindExitCode = bind(skt, result->ai_addr, result->ai_addrlen);
-    std::cerr << strerror(errno) << std::endl;
     int listenExitCode = listen(skt, 1);
-    std::cerr << strerror(errno) << std::endl;
     if (bindExitCode != -1 && listenExitCode != -1) {
       int client_skt = accept(skt, nullptr, nullptr);
       if (client_skt != -1) {

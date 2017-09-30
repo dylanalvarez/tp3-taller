@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
   FileParser fileParser(argv[1]);
   std::string nextInstruction;
   while (!(nextInstruction = fileParser.parseNextInstruction()).empty()) {
-    if (nextInstruction[0] == 'E') {
+    if (nextInstruction.find(" -> ") != std::string::npos) {
       std::cout << nextInstruction << std::endl;
     } else {
       connectionHandler.send(
@@ -19,10 +19,7 @@ int main(int argc, char *argv[]) {
                           nextInstruction.end()));
       std::vector<char> responseOpcode = connectionHandler.receive(1);
       size_t length = nextInstruction[0] == 'R' ? 10 : 20;
-      if (responseOpcode[0] == 'E') {
-        length = 5;
-        std::cout << nextInstruction << " -> ";
-      }
+      if (responseOpcode[0] == 'E') { length = 5; }
       std::vector<char> responseContent = connectionHandler.receive(length);
       std::cout
         << responseOpcode[0]

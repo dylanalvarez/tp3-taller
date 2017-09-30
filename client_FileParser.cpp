@@ -10,12 +10,12 @@
 
 #define METADATA_LENGTH 2
 #define DATA_LENGTH 4
-#define INVALID_TRANSACTION "E00001"
 
 FileParser::FileParser(std::string fileName) :
   source(std::ifstream(fileName, std::ios::binary)) {}
 
 std::string FileParser::parseNextInstruction() {
+  bool invalidTransaction = false;
   // read metadata
   unsigned char metadataBuffer[METADATA_LENGTH];
   if (!source.read((char *) metadataBuffer, METADATA_LENGTH)) { return ""; }
@@ -34,26 +34,29 @@ std::string FileParser::parseNextInstruction() {
 
   // extract id checksum from metadata
   unsigned char idChecksum = (metadataBuffer[0] >> 3) & (unsigned char) 31;
-  if (idChecksum != idBuffer.count()) { return INVALID_TRANSACTION; }
+  if (idChecksum != idBuffer.count()) { invalidTransaction = true; }
 
   int32_t amount = 0;
   unsigned char amountChecksum = 0;
-  if (operation != checkAmount && operation != registerCard) {
-    // extract amount checksum from metadata
-    amountChecksum = ((metadataBuffer[0] << 2) & (unsigned char) 28) |
-                     ((metadataBuffer[1] >> 6) & (unsigned char) 3);
 
+  // extract amount checksum from metadata
+  amountChecksum = ((metadataBuffer[0] << 2) & (unsigned char) 28) |
+                   ((metadataBuffer[1] >> 6) & (unsigned char) 3);
+
+  if (operation != checkAmount && operation != registerCard) {
     // read amount
     std::bitset<DATA_LENGTH * 8> amountBuffer;
     if (!source.read((char *) &amountBuffer, DATA_LENGTH)) {
       throw Exception("Input file has wrong format");
     }
-    if (amountChecksum != amountBuffer.count()) { return INVALID_TRANSACTION; }
+    if (amountChecksum != amountBuffer.count()) { invalidTransaction = true; }
     uint32_t unsignedAmount = ntohl(static_cast<uint32_t>(idBuffer.to_ulong()));
     std::memcpy(&amount, &unsignedAmount, 4);
-  }
+  } else if (amountChecksum != 0) { invalidTransaction = true; }
 
-  return _toString(operation, id, amount);
+  std::string result = _toString(operation, id, amount);
+  if (invalidTransaction) { result += " -> E00001"; }
+  return result;
 }
 
 std::string

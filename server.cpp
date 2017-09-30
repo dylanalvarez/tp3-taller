@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <string>
 
 #include "common_ConnectionHandler.h"
 #include "common_Exception.h"
@@ -28,6 +29,8 @@ int main(int argc, char *argv[]) {
     if (operation != checkAmount && operation != registerCard) {
       amount = connectionHandler.receive(10);
     }
+    std::string request = std::string(content.begin(), content.end())
+                          + std::string(amount.begin(), amount.end()) + " -> ";
     char errorCode = subeManager.processInstruction(
       operation,
       std::vector<char>(content.begin() + 1, content.end()),
@@ -35,9 +38,13 @@ int main(int argc, char *argv[]) {
     if (errorCode == '0') {
       connectionHandler.send(content);
       connectionHandler.send(amount);
+      std::cout << request << std::string(content.begin(), content.end())
+                << std::string(amount.begin(), amount.end()) << std::endl;
     } else {
-      connectionHandler.send(
-        std::vector<char>{'E', '0', '0', '0', '0', errorCode});
+      std::vector<char> response{'E', '0', '0', '0', '0', errorCode};
+      connectionHandler.send(response);
+      std::cerr << request << std::string(response.begin(), response.end())
+                << std::endl;
     }
   }
   return 0;
