@@ -50,7 +50,8 @@ std::string FileParser::parseNextInstruction() {
       throw Exception("Input file has wrong format");
     }
     if (amountChecksum != amountBuffer.count()) { invalidTransaction = true; }
-    uint32_t unsignedAmount = ntohl(static_cast<uint32_t>(idBuffer.to_ulong()));
+    uint32_t unsignedAmount = ntohl(
+      static_cast<uint32_t>(amountBuffer.to_ulong()));
     std::memcpy(&amount, &unsignedAmount, 4);
   } else if (amountChecksum != 0) { invalidTransaction = true; }
 
