@@ -22,7 +22,7 @@ SUBEManager::processInstruction(Operation operation,
       SUBEs[id] = 0;
       break;
     case addAmount:
-      if (SUBEs[id] + amount < 0) { return '3'; }
+      if (SUBEs[id] + amount < 0 && amount < 0) { return '3'; }
     case forceAddAmount:
       SUBEs[id] += amount;
       break;
