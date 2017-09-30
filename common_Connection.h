@@ -5,27 +5,25 @@
 #include <array>
 #include <vector>
 
-class ConnectionHandler {
+class Connection {
 public:
-  ConnectionHandler(std::string ip, std::string port);
+  Connection(std::string ip, std::string port);
 
-  explicit ConnectionHandler(std::string port);
+  explicit Connection(std::string port);
 
   void send(std::vector<char> content);
 
   std::vector<char> receive(size_t sizeInBytes);
 
-  ConnectionHandler(const ConnectionHandler &) = delete;
+  Connection(const Connection &) = delete;
 
-  ConnectionHandler &operator=(const ConnectionHandler &) = delete;
+  Connection &operator=(const Connection &) = delete;
 
-  ~ConnectionHandler();
+  ~Connection();
 
 private:
   int skt;
   int peer_skt;
-  std::string ip;
-  std::string port;
 };
 
 #endif //TP3_TALLER_CONNECTION_HANDLER_H

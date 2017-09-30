@@ -9,12 +9,11 @@
 #include <vector>
 #include <string>
 
-#include "common_ConnectionHandler.h"
+#include "common_Connection.h"
 #include "common_Exception.h"
 
-ConnectionHandler::ConnectionHandler(std::string ip, std::string port) :
-  skt(-1), peer_skt(-1), ip(std::move(ip)), port(std::move(port)) {
-  bool isServer = (this->ip.empty());
+Connection::Connection(std::string ip, std::string port) {
+  bool isServer = (ip.empty());
 
   struct addrinfo hints{};
   hints.ai_family = AF_INET;
@@ -23,8 +22,8 @@ ConnectionHandler::ConnectionHandler(std::string ip, std::string port) :
 
   struct addrinfo *result;
   int exitCode = getaddrinfo(
-    isServer ? nullptr : this->ip.c_str(),
-    this->port.c_str(),
+    isServer ? nullptr : ip.c_str(),
+    port.c_str(),
     &hints,
     &result);
   if (exitCode != 0) { throw Exception(gai_strerror(exitCode)); }
@@ -72,10 +71,10 @@ ConnectionHandler::ConnectionHandler(std::string ip, std::string port) :
   }
 }
 
-ConnectionHandler::ConnectionHandler(std::string port) :
-  ConnectionHandler("", std::move(port)) {}
+Connection::Connection(std::string port) :
+  Connection("", std::move(port)) {}
 
-ConnectionHandler::~ConnectionHandler() {
+Connection::~Connection() {
   if (this->peer_skt != -1) {
     shutdown(this->peer_skt, SHUT_RDWR);
     close(this->peer_skt);
@@ -86,7 +85,7 @@ ConnectionHandler::~ConnectionHandler() {
   }
 }
 
-void ConnectionHandler::send(std::vector<char> content) {
+void Connection::send(std::vector<char> content) {
   size_t sentBytes = 0;
   auto sizeInBytes = content.size();
   while (sentBytes < sizeInBytes) {
@@ -99,7 +98,7 @@ void ConnectionHandler::send(std::vector<char> content) {
   }
 }
 
-std::vector<char> ConnectionHandler::receive(size_t sizeInBytes) {
+std::vector<char> Connection::receive(size_t sizeInBytes) {
   size_t receivedBytes = 0;
   std::vector<char> buffer(sizeInBytes);
   while (receivedBytes < sizeInBytes) {
