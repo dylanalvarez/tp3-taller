@@ -8,10 +8,10 @@
 
 int main(int argc, char *argv[]) {
   ServerConnectionFactory connectionFactory("8081");
-  Connection connection = connectionFactory.acceptConnection();
   SUBEManager subeManager;
+
   std::vector<ServerThread *> threads;
-  ServerThread thread(connection, subeManager);
+  ServerThread thread(connectionFactory.acceptConnection(), subeManager);
   threads.push_back(&thread);
   thread.start();
   thread.join();
