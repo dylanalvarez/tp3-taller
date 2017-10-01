@@ -1,5 +1,5 @@
-#ifndef TP3_TALLER_CONNECTION_HANDLER_H
-#define TP3_TALLER_CONNECTION_HANDLER_H
+#ifndef TP3_TALLER_CONNECTION_H
+#define TP3_TALLER_CONNECTION_H
 
 #include <string>
 #include <array>
@@ -7,23 +7,20 @@
 
 class Connection {
 public:
-  Connection(std::string ip, std::string port);
-
-  explicit Connection(std::string port);
+  explicit Connection(int fileDescriptor);
 
   void send(std::vector<char> content);
 
   std::vector<char> receive(size_t sizeInBytes);
 
-  Connection(const Connection &) = delete;
-
   Connection &operator=(const Connection &) = delete;
 
   ~Connection();
 
-private:
+protected:
+  Connection() = default;
+
   int skt;
-  int peer_skt;
 };
 
-#endif //TP3_TALLER_CONNECTION_HANDLER_H
+#endif //TP3_TALLER_CONNECTION_H

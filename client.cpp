@@ -1,13 +1,14 @@
 #include "common_Connection.h"
 #include "common_Exception.h"
 #include "client_FileParser.h"
+#include "client_ClientConnection.h"
 #include <iostream>
 #include <string>
 #include <vector>
 
 int main(int argc, char *argv[]) {
   if (argc < 2) { throw Exception("Missing file name"); }
-  Connection connection("127.0.0.1", "8080");
+  ClientConnection connection("127.0.0.1", "8081");
   FileParser fileParser(argv[1]);
   std::string nextInstruction;
   while (!(nextInstruction = fileParser.parseNextInstruction()).empty()) {
@@ -27,6 +28,5 @@ int main(int argc, char *argv[]) {
         << std::endl;
     }
   }
-  connection.send(std::vector<char>(11, ' '));
   return 0;
 }

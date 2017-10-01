@@ -7,9 +7,11 @@
 #include "common_Exception.h"
 #include "common_Operation.h"
 #include "server_SUBEManager.h"
+#include "server_ServerConnectionFactory.h"
 
 int main(int argc, char *argv[]) {
-  Connection connection("8080");
+  ServerConnectionFactory connectionFactory("8081");
+  Connection connection = connectionFactory.acceptConnection();
   SUBEManager subeManager;
   std::vector<char> content;
   std::map<char, Operation> operations = {
@@ -19,8 +21,7 @@ int main(int argc, char *argv[]) {
     {'R', registerCard},
     {'S', setAmount},
   };
-  while (
-    (content = connection.receive(11)) != std::vector<char>(11, ' ')) {
+  while (!(content = connection.receive(11)).empty()) {
     std::vector<char> amount;
     if (operations.find(content[0]) == operations.end()) {
       throw Exception("Invalid opcode");
