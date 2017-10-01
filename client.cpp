@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]) {
   if (argc < 2) { throw Exception("Missing file name"); }
-  ClientConnection connection("127.0.0.1", "8081");
+  ClientConnection connection("127.0.0.1", "8080");
   FileParser fileParser(argv[1]);
   std::string nextInstruction;
   while (!(nextInstruction = fileParser.parseNextInstruction()).empty()) {
@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
         std::vector<char>(nextInstruction.begin(),
                           nextInstruction.end()));
       std::vector<char> responseOpcode = connection.receive(1);
+      if (responseOpcode.empty()) { throw Exception("Server disconnected"); }
       size_t length = nextInstruction[0] == 'R' ? 10 : 20;
       if (responseOpcode[0] == 'E') { length = 5; }
       std::vector<char> responseContent = connection.receive(length);
