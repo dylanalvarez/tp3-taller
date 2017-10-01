@@ -9,9 +9,14 @@
 int main(int argc, char *argv[]) {
   ServerConnectionFactory connectionFactory("8081");
   SUBEManager subeManager;
+  std::vector<ServerThread *> threads;
 
-  ServerThread thread(connectionFactory.acceptConnection(), subeManager);
+  Connection connection = connectionFactory.acceptConnection();
+  ServerThread thread(connection, subeManager);
+  threads.push_back(&thread);
   thread.start();
-  thread.join();
+
+  std::for_each(threads.begin(), threads.end(),
+                [](ServerThread *&serverThread) { serverThread->join(); });
   return 0;
 }
