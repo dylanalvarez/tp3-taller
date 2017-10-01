@@ -7,7 +7,7 @@
 #include "server_ServerThread.h"
 
 int main(int argc, char *argv[]) {
-  ServerConnectionFactory connectionFactory("8081");
+  ServerConnectionFactory connectionFactory("8080");
   SUBEManager subeManager;
   std::vector<ServerThread *> threads;
 

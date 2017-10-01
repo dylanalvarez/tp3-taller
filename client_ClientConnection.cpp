@@ -36,5 +36,5 @@ ClientConnection::ClientConnection(std::string ip, std::string port) {
   }
 
   freeaddrinfo(result);
-  if (!success) throw Exception("Could not connect");
+  if (!success) throw Exception(strerror(errno));
 }
