@@ -9,9 +9,9 @@ class Connection {
 public:
   explicit Connection(int fileDescriptor);
 
-  void send(std::vector<char> content);
+  void send(std::vector<char> content) const;
 
-  std::vector<char> receive(size_t sizeInBytes);
+  std::vector<char> receive(size_t sizeInBytes) const;
 
   Connection &operator=(const Connection &) = delete;
 

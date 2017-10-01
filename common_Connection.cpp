@@ -22,7 +22,7 @@ Connection::~Connection() {
   close(this->skt);
 }
 
-void Connection::send(std::vector<char> content) {
+void Connection::send(std::vector<char> content) const {
   size_t sentBytes = 0;
   auto sizeInBytes = content.size();
   while (sentBytes < sizeInBytes) {
@@ -35,7 +35,7 @@ void Connection::send(std::vector<char> content) {
   }
 }
 
-std::vector<char> Connection::receive(size_t sizeInBytes) {
+std::vector<char> Connection::receive(size_t sizeInBytes) const {
   size_t receivedBytes = 0;
   std::vector<char> buffer(sizeInBytes);
   while (receivedBytes < sizeInBytes) {
