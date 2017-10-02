@@ -12,7 +12,8 @@
 #include "server_ServerConnectionFactory.h"
 #include "common_Exception.h"
 
-ServerConnectionFactory::ServerConnectionFactory(std::string port) : skt(-1) {
+ServerConnectionFactory::ServerConnectionFactory(std::string port) :
+    skt(-1), wasManuallyShutDown(false) {
   struct addrinfo hints{};
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
@@ -43,13 +44,23 @@ ServerConnectionFactory::ServerConnectionFactory(std::string port) : skt(-1) {
   if (listen(skt, 1) == -1) { throw Exception(strerror(errno)); }
 }
 
+bool ServerConnectionFactory::canAcceptConnection() {
+  return !wasManuallyShutDown;
+}
+
 Connection ServerConnectionFactory::acceptConnection() {
+  if (wasManuallyShutDown) { throw Exception("Socket was already shut down"); }
   int client_skt = accept(skt, nullptr, nullptr);
   if (client_skt == -1) throw Exception("Accepted invalid socket");
   return Connection(client_skt);
 }
 
+void ServerConnectionFactory::shutdown() {
+  ::shutdown(this->skt, SHUT_RDWR);
+  wasManuallyShutDown = true;
+}
+
 ServerConnectionFactory::~ServerConnectionFactory() {
-  shutdown(this->skt, SHUT_RDWR);
+  if (!wasManuallyShutDown) { shutdown(); }
   close(this->skt);
 }

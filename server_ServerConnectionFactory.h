@@ -13,6 +13,10 @@ public:
 
   Connection acceptConnection();
 
+  bool canAcceptConnection();
+
+  void shutdown();
+
   ServerConnectionFactory(const ServerConnectionFactory &) = delete;
 
   ServerConnectionFactory &operator=(const ServerConnectionFactory &) = delete;
@@ -21,6 +25,7 @@ public:
 
 private:
   int skt;
+  bool wasManuallyShutDown;
 };
 
 
