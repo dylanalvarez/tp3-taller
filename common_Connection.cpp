@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200112L
 
-#if !defined MSG_NOSIGNAL
-# define MSG_NOSIGNAL 0 // for macOS compatibility
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0 // for macOS compatibility
 #endif
 
 #include <sys/socket.h>
