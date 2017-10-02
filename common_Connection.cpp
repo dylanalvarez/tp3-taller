@@ -1,9 +1,5 @@
 #define _POSIX_C_SOURCE 200112L
 
-#ifndef MSG_NOSIGNAL
-#define MSG_NOSIGNAL 0 // for macOS compatibility
-#endif
-
 #include <sys/socket.h>
 #include <unistd.h>
 #include <utility>
@@ -11,6 +7,10 @@
 #include <cstring>
 #include <vector>
 #include <string>
+
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0 // for macOS compatibility
+#endif
 
 #include "common_Connection.h"
 #include "common_Exception.h"

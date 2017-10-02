@@ -1,5 +1,5 @@
-#ifndef TP3_TALLER_THREAD_H
-#define TP3_TALLER_THREAD_H
+#ifndef TP3_TALLER_SERVER_THREAD_H
+#define TP3_TALLER_SERVER_THREAD_H
 
 
 #include <thread>
@@ -7,32 +7,26 @@
 #include "common_Connection.h"
 #include "server_SUBEManager.h"
 #include "common_Operation.h"
+#include "common_Thread.h"
+#include "server_ServerConnectionFactory.h"
 
-class ServerThread {
-public:
-  ServerThread(const Connection &connection, SUBEManager &subeManager);
-
-  void start();
-
-  void join();
-
-  ServerThread(const ServerThread &) = delete;
-
-  ServerThread &operator=(const ServerThread &) = delete;
+class ServerThread : public Thread {
+  public:
+  ServerThread(const ServerConnectionFactory &connectionFactory,
+               SUBEManager &subeManager);
 
   ServerThread(ServerThread &&other) noexcept;
 
-  virtual ~ServerThread() = default;
+  ~ServerThread() override = default;
 
-protected:
-  virtual void run();
+  protected:
+  void run() override;
 
-private:
-  std::thread thread;
-  const Connection &connection;
+  private:
+  const Connection connection;
   SUBEManager &subeManager;
   std::map<char, Operation> operations;
 };
 
 
-#endif //TP3_TALLER_THREAD_H
+#endif //TP3_TALLER_SERVER_THREAD_H

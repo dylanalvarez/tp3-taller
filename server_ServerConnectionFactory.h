@@ -11,7 +11,7 @@ class ServerConnectionFactory {
 public:
   explicit ServerConnectionFactory(std::string port);
 
-  Connection acceptConnection();
+  Connection acceptConnection() const;
 
   bool canAcceptConnection();
 

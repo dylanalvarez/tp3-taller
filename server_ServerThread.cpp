@@ -5,9 +5,9 @@
 #include "common_Exception.h"
 
 
-ServerThread::ServerThread(const Connection &connection,
+ServerThread::ServerThread(const ServerConnectionFactory &connectionFactory,
                            SUBEManager &subeManager) :
-    connection(connection),
+    connection(connectionFactory.acceptConnection()),
     subeManager(subeManager),
     operations{{'A', addAmount},
                {'F', forceAddAmount},
@@ -15,18 +15,14 @@ ServerThread::ServerThread(const Connection &connection,
                {'R', registerCard},
                {'S', setAmount}} {}
 
-void ServerThread::start() {
-  thread = std::thread(&ServerThread::run, this);
-}
-
-void ServerThread::join() {
-  thread.join();
-}
-
 ServerThread::ServerThread(ServerThread &&other) noexcept :
-    ServerThread(other.connection, other.subeManager) {
-  this->thread = std::move(other.thread);
-}
+    connection(other.connection),
+    subeManager(other.subeManager),
+    operations{{'A', addAmount},
+               {'F', forceAddAmount},
+               {'P', checkAmount},
+               {'R', registerCard},
+               {'S', setAmount}} {}
 
 void ServerThread::run() {
   std::vector<char> content;

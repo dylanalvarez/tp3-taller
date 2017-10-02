@@ -8,9 +8,10 @@
 #include <cstring>
 #include <vector>
 #include <string>
+#include <fcntl.h>
 
 #include "server_ServerConnectionFactory.h"
-#include "common_Exception.h"
+#include "AcceptFailedException.h"
 
 ServerConnectionFactory::ServerConnectionFactory(std::string port) :
     skt(-1), wasManuallyShutDown(false) {
@@ -48,19 +49,22 @@ bool ServerConnectionFactory::canAcceptConnection() {
   return !wasManuallyShutDown;
 }
 
-Connection ServerConnectionFactory::acceptConnection() {
-  if (wasManuallyShutDown) { throw Exception("Socket was already shut down"); }
-  int client_skt = accept(skt, nullptr, nullptr);
-  if (client_skt == -1) throw Exception("Accepted invalid socket");
-  return Connection(client_skt);
+Connection ServerConnectionFactory::acceptConnection() const {
+  try {
+    int client_skt = accept(skt, nullptr, nullptr);
+    if (client_skt == -1) throw AcceptFailedException();
+    return Connection(client_skt);
+  } catch (const std::runtime_error &error) {
+    throw AcceptFailedException();
+  }
 }
 
 void ServerConnectionFactory::shutdown() {
   ::shutdown(this->skt, SHUT_RDWR);
+  close(this->skt);
   wasManuallyShutDown = true;
 }
 
 ServerConnectionFactory::~ServerConnectionFactory() {
   if (!wasManuallyShutDown) { shutdown(); }
-  close(this->skt);
 }
