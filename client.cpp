@@ -7,9 +7,9 @@
 #include <vector>
 
 int main(int argc, char *argv[]) {
-  if (argc < 2) { throw Exception("Missing file name"); }
-  ClientConnection connection("127.0.0.1", "8080");
-  FileParser fileParser(argv[1]);
+  if (argc < 4) { throw Exception("Missing arguments"); }
+  ClientConnection connection(argv[1], argv[2]);
+  FileParser fileParser(argv[3]);
   std::string nextInstruction;
   while (!(nextInstruction = fileParser.parseNextInstruction()).empty()) {
     if (nextInstruction.find(" -> ") != std::string::npos) {

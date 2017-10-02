@@ -21,7 +21,8 @@ void joinAndDelete(std::vector<ServerThread *> &threads,
 }
 
 int main(int argc, char *argv[]) {
-  ServerConnectionFactory connectionFactory("8080");
+  if (argc < 2) { throw Exception("Missing arguments"); }
+  ServerConnectionFactory connectionFactory(argv[1]);
   SUBEManager subeManager;
   std::vector<ServerThread *> threads;
   WaitForQThread waitForQThread(connectionFactory);
