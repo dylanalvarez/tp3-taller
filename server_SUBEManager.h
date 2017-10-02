@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
 #include "common_Operation.h"
 
 class SUBEManager {
@@ -13,6 +14,7 @@ public:
 
 private:
   std::map<int32_t, int32_t> SUBEs;
+  std::mutex mutex;
 };
 
 
