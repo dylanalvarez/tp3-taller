@@ -34,7 +34,9 @@ std::string FileParser::parseNextInstruction() {
 
   // extract id checksum from metadata
   unsigned char idChecksum = (metadataBuffer[0] >> 3) & (unsigned char) 31;
-  if (idChecksum != idBuffer.count()) { invalidTransaction = true; }
+  size_t idBitCount = idBuffer.count();
+  if (idBitCount == 32) { idBitCount = 0; }
+  if (idChecksum != idBitCount) { invalidTransaction = true; }
 
   int32_t amount = 0;
   unsigned char amountChecksum = 0;
@@ -49,7 +51,9 @@ std::string FileParser::parseNextInstruction() {
     if (!source.read((char *) &amountBuffer, DATA_LENGTH)) {
       throw Exception("Input file has wrong format");
     }
-    if (amountChecksum != amountBuffer.count()) { invalidTransaction = true; }
+    size_t amountBitCount = amountBuffer.count();
+    if (amountBitCount == 32) { amountBitCount = 0; }
+    if (amountChecksum != amountBitCount) { invalidTransaction = true; }
     uint32_t unsignedAmount = ntohl(
       static_cast<uint32_t>(amountBuffer.to_ulong()));
     std::memcpy(&amount, &unsignedAmount, 4);

@@ -7,7 +7,7 @@ char
 SUBEManager::processInstruction(Operation operation,
                                 const std::vector<char> &idVector,
                                 std::vector<char> &amountVector) {
-  uint32_t id = static_cast<uint32_t>(std::stol(
+  uint32_t id = static_cast<uint32_t>(std::stoll(
       std::string(idVector.begin(), idVector.end())));
   int32_t amount = amountVector.empty() ? 0 : std::stoi(
       std::string(amountVector.begin(), amountVector.end()));
