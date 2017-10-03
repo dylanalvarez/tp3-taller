@@ -13,7 +13,7 @@ public:
                           std::vector<char> &amount);
 
 private:
-  std::map<int32_t, int32_t> SUBEs;
+  std::map<uint32_t, int32_t> SUBEs;
   std::mutex mutex;
 };
 
