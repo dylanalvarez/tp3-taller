@@ -4,6 +4,10 @@
 #include "server_ServerConnectionFactory.h"
 #include "common_Thread.h"
 
+/*
+ * Waits for the user to enter 'q' in stdin, shutdown serverConnectionFactory
+ * when that happens
+ */
 class WaitForQThread : public Thread {
   public:
   explicit WaitForQThread(ServerConnectionFactory &serverConnectionFactory);

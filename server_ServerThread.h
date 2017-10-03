@@ -10,12 +10,16 @@
 #include "common_Thread.h"
 #include "server_ServerConnectionFactory.h"
 
+/*
+ * Recieves instructions from a client and updates subeManager accordingly
+ */
 class ServerThread : public Thread {
   public:
+  /*
+   * connectionFactory is used to instantiate a connection with a client
+   */
   ServerThread(const ServerConnectionFactory &connectionFactory,
                SUBEManager &subeManager);
-
-  ServerThread(ServerThread &&other) noexcept;
 
   ~ServerThread() override = default;
 

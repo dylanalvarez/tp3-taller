@@ -15,15 +15,6 @@ ServerThread::ServerThread(const ServerConnectionFactory &connectionFactory,
                {'R', registerCard},
                {'S', setAmount}} {}
 
-ServerThread::ServerThread(ServerThread &&other) noexcept :
-    connection(other.connection),
-    subeManager(other.subeManager),
-    operations{{'A', addAmount},
-               {'F', forceAddAmount},
-               {'P', checkAmount},
-               {'R', registerCard},
-               {'S', setAmount}} {}
-
 void ServerThread::run() {
   std::vector<char> content;
   while (!(content = connection.receive(11)).empty()) {
